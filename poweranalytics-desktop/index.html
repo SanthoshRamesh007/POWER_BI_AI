@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerBI Lite Designer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #6366f1;
+            --brand-secondary: #7c3aed;
+            --bg-main: #f8fafc;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: #1e293b;
+        }
+
+        /* Enhanced Global Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+            transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+            background-clip: content-box;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* BI Designer Canvas Styles */
+        .designer-canvas {
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+            min-height: 2000px;
+            scrollbar-gutter: stable;
+        }
+
+        /* Premium Designer Scrollbar Overrides */
+        .designer-scroll-container::-webkit-scrollbar {
+            width: 10px;
+        }
+        .designer-scroll-container::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 3rem;
+        }
+        .designer-scroll-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border: 3px solid transparent;
+            background-clip: content-box;
+            border-radius: 20px;
+        }
+        .designer-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+            background-clip: content-box;
+        }
+
+        /* React Grid Layout Essential Styles */
+        .react-grid-layout {
+            position: relative;
+            transition: height 200ms ease;
+        }
+        .react-grid-item {
+            transition: all 200ms ease;
+            transition-property: left, top;
+        }
+        .react-grid-item.cssTransforms {
+            transition-property: transform;
+        }
+        .react-grid-item.resizing {
+            z-index: 10;
+            user-select: none;
+        }
+        .react-grid-item.react-draggable-dragging {
+            transition: none;
+            z-index: 10;
+        }
+        .react-grid-placeholder {
+            background: rgba(99, 102, 241, 0.05) !important;
+            border-radius: 2.5rem !important;
+            border: 2px dashed rgba(99, 102, 241, 0.2) !important;
+            opacity: 1 !important;
+            z-index: 2 !important;
+            user-select: none;
+        }
+        .react-resizable-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            bottom: 0;
+            right: 0;
+            cursor: se-resize;
+        }
+        .react-resizable-handle::after {
+            content: "";
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid #cbd5e1;
+            border-bottom: 2px solid #cbd5e1;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "recharts": "https://esm.sh/recharts@^3.7.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-grid-layout": "https://esm.sh/react-grid-layout@^1.5.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="overflow-hidden">
+    <div id="root"></div>
+<script type="module" src="/index.jsx"></script>
+</body>
+</html>
