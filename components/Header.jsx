@@ -1,0 +1,81 @@
+
+import React from 'react';
+import { Bell, HelpCircle, Search, Sun, Moon, LogOut } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+import appLogo from '../ChillView_logo.jpg';
+
+const Header = ({ authUser, onLogout, onLogoClick }) => {
+    const { theme, toggleTheme } = useTheme();
+    const displayName = authUser?.name || 'Local User';
+    const initials = (displayName || 'LU')
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0]?.toUpperCase())
+        .join('') || 'LU';
+
+    return (
+        <header className="h-16 glass-panel border-b px-8 flex items-center justify-between sticky top-0 z-50 animate-fade-in dark:border-gray-700">
+            <div className="flex items-center gap-8 flex-1">
+                <div className="flex items-center gap-3">
+                    <img
+                        src={appLogo}
+                        alt="ChillView"
+                        className={`h-10 w-auto object-contain rounded-xl shadow-sm ${onLogoClick ? 'cursor-pointer' : ''}`}
+                        onClick={onLogoClick}
+                    />
+                </div>
+
+                <div className="max-w-md w-full relative">
+                    <div className="relative group">
+                        <input
+                            type="text"
+                            placeholder="Find visuals, reports or help..."
+                            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl px-11 py-2.5 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 transition-all focus:outline-none focus:ring-2 focus:ring-gray-400/30 dark:focus:ring-gray-500/30 focus:bg-white dark:focus:bg-gray-700 focus:shadow-lg"
+                        />
+                        <Search size={18} className="absolute left-4 top-2.5 text-gray-400 dark:text-gray-500 group-focus-within:text-gray-600 dark:group-focus-within:text-gray-300 transition-all group-focus-within:scale-110" />
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 pr-4 border-r border-gray-200 dark:border-gray-700">
+                    <button
+                        onClick={toggleTheme}
+                        className="p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 rounded-xl transition-all"
+                        title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                    >
+                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                    </button>
+                    <button className="p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 rounded-xl transition-all relative group">
+                        <Bell size={20} className="relative z-10" />
+                        <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full border-2 border-white dark:border-gray-800 bg-blue-500 animate-pulse"></div>
+                    </button>
+                    <button className="p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 rounded-xl transition-all">
+                        <HelpCircle size={20} className="relative z-10" />
+                    </button>
+                </div>
+                <div className="flex items-center gap-3 pl-2">
+                    {onLogout && (
+                        <button
+                            onClick={onLogout}
+                            className={`inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold border ${theme === 'dark' ? 'bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                        >
+                            <LogOut size={14} />
+                            <span>Logout</span>
+                        </button>
+                    )}
+                    <div className="flex flex-col items-end">
+                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200">{displayName}</span>
+                        <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Editor Access</span>
+                    </div>
+                    <div className="h-10 w-10 rounded-2xl border-2 border-white dark:border-gray-700 shadow-lg flex items-center justify-center text-white font-bold text-sm transition-all hover:scale-105 cursor-pointer bg-gray-700 dark:bg-gray-500">
+                        {initials}
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+};
+
+export default Header;

@@ -1,112 +1,134 @@
-# Power BI AI - Analytics Desktop Application
+# ChillView
 
-## 📊 Overview
+A desktop-style analytics dashboard built with React, featuring interactive visualizations with ECharts and a customizable grid layout.
 
-Power BI AI is an intelligent analytics desktop application that combines the power of AI with data visualization. Built with React and powered by Google's Gemini AI, this application provides interactive dashboards, real-time analytics, and AI-driven insights for your data.
+## Features
 
-## ✨ Features
+- **Interactive Charts** – Built with ECharts for rich, responsive visualizations
+- **Draggable Grid Layout** – Customizable dashboard panels via React Grid Layout
+- **Modern UI** – Clean interface with Lucide React icons
 
-- **AI-Powered Analytics**: Leverage Google Gemini AI for intelligent data analysis
-- **Interactive Dashboards**: Dynamic and customizable data visualizations using Recharts
-- **Responsive Design**: Modern, clean UI that works across different screen sizes
-- **Real-time Data Processing**: Efficient data handling and visualization
-- **Customizable Layouts**: Drag-and-drop grid layout for personalized dashboards
+## Tech Stack
 
-## 🚀 Tech Stack
+| Category       | Technology              |
+| -------------- | ----------------------- |
+| Framework      | React 19                |
+| Build Tool     | Vite 6                  |
+| Charts         | ECharts 6               |
+| Layout         | React Grid Layout       |
+| Icons          | Lucide React            |
+| Deployment     | GitHub Pages             |
 
-- **Frontend Framework**: React 19.2.4
-- **Build Tool**: Vite 6.2.0
-- **AI Integration**: Google Generative AI (@google/genai)
-- **Charts & Visualization**: Recharts 3.7.0
-- **UI Components**: Lucide React (Icons)
-- **Layout Management**: React Grid Layout
-- **Styling**: Modern CSS with responsive design
+## Supported Chart Types
 
-## 📋 Prerequisites
+The application ships with **43 chart types** across 7 categories, all rendered using Apache ECharts.
 
-Before running this application, make sure you have:
+| Category | Charts |
+|---|---|
+| **Bar Charts** | Clustered Bar · Stacked Bar · 100% Stacked Bar · Horizontal Bar · Horizontal Stacked · Horizontal 100% · Waterfall · Range Bar |
+| **Line Charts** | Smooth Line · Straight Line · Step Line · Dashed Line · Multi-Axis Line · Area-Line Mix |
+| **Area Charts** | Smooth Area · Step Area · Stacked Area · 100% Stacked Area · Gradient Area · Reverse Area |
+| **Circular / Part-to-Whole** | Pie · Donut · Semi Pie · Semi Donut · Rose (Nightingale) · Sunburst · Radial Bar · Radar |
+| **Distribution & Correlation** | Scatter · Bubble · Scatter + Line · Treemap · Heatmap |
+| **Combo Charts** | Bar + Line · Stacked Bar + Line · Area + Line |
+| **Indicators** | KPI Single · KPI Progress · KPI Bullet · Table · Card List · Gauge · Sparkline |
 
-- **Node.js** (v16 or higher recommended)
-- **npm** or **yarn** package manager
-- **Gemini API Key** from Google AI Studio
+## Dynamic Chart Recommendation Logic
 
-## 🛠️ Installation & Setup
+Instead of manually picking a chart, the app **automatically recommends the best chart type** based on the shape of your data. The recommendation engine lives in `services/chartRecommender.js`.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/SanthoshRamesh007/POWER_BI_AI.git
-   cd POWER_BI_AI/poweranalytics-desktop
-   ```
+### How It Works
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+1. **Column profiling** — Every column in the dataset is classified as `number`, `string` (categorical), or `date`.
+2. **Scoring** — A set of heuristic rules generates a score (0–100) for each chart type based on how many numeric, categorical, and date columns are present, along with the currently assigned dimension and measures.
+3. **De-duplication** — If a chart type is matched by multiple rules only the highest score is kept.
+4. **Ranking** — Results are sorted by score descending; the top result is auto-selected.
 
-3. **Configure API Key**
-   - Open the `.env.local` file in the `poweranalytics-desktop` directory
-   - Set your Gemini API key:
-     ```
-     GEMINI_API_KEY=your_api_key_here
-     ```
+### Recommendation Rules (summary)
 
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
+| Data Shape | Recommended Charts | Top Score |
+|---|---|---|
+| 1 categorical + 1+ numeric | Clustered Bar, Horizontal Bar, Stacked Bar, 100% Bar | 90 |
+| 1+ date + 1+ numeric | Smooth Line, Straight Line, Smooth Area, Stacked Area | 95 |
+| 2+ numeric | Scatter, Bubble (3+ numeric) | 85 |
+| 1 categorical + 2+ numeric | Combo Bar+Line, Combo Area+Line | 82 |
+| 1 categorical + 3+ numeric | Radar, Radial Bar | 72 |
+| 1 categorical + 1 numeric | Pie, Donut, Treemap, Rose, Sunburst | 75 |
+| 2+ categorical + 1 numeric | Heatmap | 75 |
+| Any numeric | KPI Single, Gauge, Sparkline | 60 |
+| Always | Table | 40 |
 
-5. **Open your browser**
-   - Navigate to `http://localhost:5173` (or the port shown in your terminal)
-
-## 📦 Available Scripts
-
-In the project directory, you can run:
-
-- `npm run dev` - Runs the app in development mode
-- `npm run build` - Builds the app for production
-- `npm run preview` - Preview the production build locally
-
-## 🏗️ Project Structure
+### Example Flow
 
 ```
-POWER_BI_AI/
-└── poweranalytics-desktop/
-    ├── components/          # Reusable React components
-    ├── services/           # API and service integrations
-    ├── App.jsx             # Main application component
-    ├── index.jsx           # Application entry point
-    ├── constants.js        # Application constants
-    ├── types.js            # Type definitions
-    ├── vite.config.js      # Vite configuration
-    └── package.json        # Project dependencies
+User loads CSV ──▶ Column profiling detects:
+                     • "Department" → string (categorical)
+                     • "Revenue"    → number
+                     • "Profit"     → number
+
+Recommender scores:
+  Clustered Bar     90
+  Stacked Bar       85
+  Scatter           85
+  Combo Bar+Line    82
+  Horizontal Bar    82
+  …
+
+Top pick → Clustered Bar (auto-rendered)
+User can override with any other chart from the ranked list.
 ```
 
-## 🔗 Links
+### Chart Option Builder
 
-- **AI Studio App**: [View in AI Studio](https://ai.studio/apps/drive/1dVk19N0FYnz16QaLBZFWgYgLORtSdXB9)
-- **GitHub Repository**: [POWER_BI_AI](https://github.com/SanthoshRamesh007/POWER_BI_AI)
+Once a chart type is selected, `services/echartsOptionBuilder.js` converts the visual type, processed data, config (dimension + measures), and theme (`light` / `dark`) into a ready-to-use ECharts option object. Each chart type has a dedicated branch in a `switch` statement that produces fully themed, responsive chart options — including tooltips, legends, axis styles, animations, and dark-mode support.
 
-## 🤝 Contributing
+## Getting Started
 
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+### Prerequisites
 
-## 📝 License
+- Node.js (v18 or later recommended)
+- npm
 
-This project is private and proprietary.
+### Installation
 
-## 👨‍💻 Author
+```bash
+git clone https://github.com/Vishnudharan24/TabNLP.git
+cd TabNLP/poweranalytics-desktop
+npm install
+```
 
-**Santhosh Ramesh**
-- GitHub: [@SanthoshRamesh007](https://github.com/SanthoshRamesh007)
+### Development
 
-## 🙏 Acknowledgments
+```bash
+npm run dev
+```
 
-- Google Gemini AI for powering the intelligent analytics
-- React community for the amazing ecosystem
-- All contributors and users of this project
+The app will be available at `http://localhost:5173`.
 
----
+### Build
 
-<div align="center">
-  Made with ❤️ using React and Google Gemini AI
-</div>
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+### Deploy to GitHub Pages
+
+```bash
+npm run deploy
+```
+
+This builds the project and publishes the `dist` folder to GitHub Pages.
+
+## Live Demo
+
+[https://Vishnudharan24.github.io/TabNLP](https://Vishnudharan24.github.io/TabNLP)
+
+## License
+
+This project is private.

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChillView</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #3B82F6;
+            --brand-secondary: #1E293B;
+            --brand-accent: #22C55E;
+
+            --bg-main: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --bg-surface: #FFFFFF;
+            --bg-elevated: #FFFFFF;
+            --bg-hover: #F1F5F9;
+            --bg-active: #E2E8F0;
+
+            --text-primary: #0F172A;
+            --text-secondary: #334155;
+            --text-muted: #64748B;
+            --text-disabled: #94A3B8;
+
+            --border-color: #E2E8F0;
+            --border-strong: #CBD5E1;
+            --divider: #E5E7EB;
+
+            --scrollbar-thumb: #CBD5E1;
+            --scrollbar-hover: #94A3B8;
+
+            --canvas-dot: #CBD5E1;
+            --canvas-bg: #F8FAFC;
+            --grid-placeholder-bg: #DBEAFE;
+            --grid-placeholder-border: #3B82F6;
+            --resize-handle: #64748B;
+
+            --shadow-panel: 0 6px 24px rgba(2, 6, 23, 0.08);
+            --shadow-elevated: 0 14px 40px rgba(2, 6, 23, 0.12);
+        }
+
+        html.dark {
+            --brand-primary: #3B82F6;
+            --brand-secondary: #1E293B;
+            --brand-accent: #22C55E;
+
+            --bg-main: #0F172A;
+            --bg-card: #111827;
+            --bg-surface: #111827;
+            --bg-elevated: #1E293B;
+            --bg-hover: #243244;
+            --bg-active: #2B3B52;
+
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --text-disabled: #475569;
+
+            --border-color: #253449;
+            --border-strong: #334155;
+            --divider: #2A3A50;
+
+            --scrollbar-thumb: #334155;
+            --scrollbar-hover: #475569;
+
+            --canvas-dot: #1E293B;
+            --canvas-bg: #0F172A;
+            --grid-placeholder-bg: #1E293B;
+            --grid-placeholder-border: #3B82F6;
+            --resize-handle: #64748B;
+
+            --shadow-panel: 0 6px 24px rgba(2, 6, 23, 0.35);
+            --shadow-elevated: 0 16px 44px rgba(2, 6, 23, 0.48);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        body,
+        #root,
+        .glass-panel,
+        .react-grid-item,
+        .report-toolbar-controls>button,
+        .report-toolbar-controls>select,
+        input,
+        select,
+        button {
+            transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+        }
+
+        /* App-wide typography normalization: 12 / 14 / 16 */
+        .app-type-system {
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .app-type-system h1,
+        .app-type-system h2,
+        .app-type-system h3,
+        .app-type-system h4,
+        .app-type-system .type-lg,
+        .app-type-system [class*="text-lg"] {
+            font-size: 16px !important;
+            line-height: 1.35;
+        }
+
+        .app-type-system .type-sm,
+        .app-type-system [class*="text-xs"],
+        .app-type-system [class*="text-[7px]"],
+        .app-type-system [class*="text-[8px]"],
+        .app-type-system [class*="text-[9px]"],
+        .app-type-system [class*="text-[10px]"],
+        .app-type-system [class*="text-[11px]"],
+        .app-type-system [class*="text-[12px]"] {
+            font-size: 12px !important;
+            line-height: 1.35;
+        }
+
+        .app-type-system [class*="text-sm"],
+        .app-type-system [class*="text-base"],
+        .app-type-system [class*="text-[13px]"],
+        .app-type-system [class*="text-[14px]"],
+        .app-type-system [class*="text-[15px]"] {
+            font-size: 14px !important;
+            line-height: 1.45;
+        }
+
+        /* Unified report toolbar controls */
+        .report-toolbar-controls > button,
+        .report-toolbar-controls > select {
+            height: 40px;
+            min-height: 40px;
+            border-radius: 12px;
+            padding-left: 14px;
+            padding-right: 14px;
+            font-size: 14px !important;
+            line-height: 1;
+        }
+
+        .report-toolbar-controls {
+            gap: 10px;
+        }
+
+        /* Side panel controls rhythm */
+        .side-panel-normalized button,
+        .side-panel-normalized select,
+        .side-panel-normalized input {
+            border-radius: 10px;
+        }
+
+        .side-panel-normalized .glass-panel > div:first-child button {
+            min-height: 40px;
+        }
+
+        /* Enhanced Global Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-hover);
+        }
+
+        /* Report canvas scrollbar (always visible) */
+        .report-canvas-scrollbar {
+            scrollbar-width: auto;
+            scrollbar-color: var(--scrollbar-thumb) transparent;
+            scrollbar-gutter: stable;
+        }
+
+        .report-canvas-scrollbar::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .report-canvas-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .report-canvas-scrollbar::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 10px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+        }
+
+        .report-canvas-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: var(--scrollbar-hover);
+        }
+
+        /* Clean Panel Style */
+        .glass-panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-panel);
+        }
+
+        /* Designer Canvas Styles */
+        .designer-canvas {
+            background-image:
+                radial-gradient(var(--canvas-dot) 1px, transparent 1px);
+            background-size: 24px 24px;
+            background-color: var(--canvas-bg);
+        }
+
+        .designer-canvas .react-grid-layout {
+            min-height: 2000px;
+        }
+
+        /* React Grid Layout Essential Styles */
+        .react-grid-layout {
+            position: relative;
+            transition: height 200ms ease;
+        }
+
+        .react-grid-item {
+            transition: all 200ms ease;
+            transition-property: left, top, transform;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 0.9rem;
+            box-shadow: var(--shadow-panel);
+        }
+
+        .react-grid-item.cssTransforms {
+            transition-property: transform;
+        }
+
+        .react-grid-item.resizing {
+            z-index: 100;
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .react-grid-item.react-draggable-dragging {
+            transition: none;
+            z-index: 100;
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .react-grid-placeholder {
+            background: var(--grid-placeholder-bg) !important;
+            border-radius: 0.5rem !important;
+            border: 2px dashed var(--grid-placeholder-border) !important;
+            opacity: 0.5 !important;
+            z-index: 2 !important;
+        }
+
+        .react-resizable-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            bottom: 0;
+            right: 0;
+            cursor: se-resize;
+            z-index: 10;
+        }
+
+        .react-resizable-handle::after {
+            content: "";
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            width: 6px;
+            height: 6px;
+            border-right: 2px solid var(--resize-handle);
+            border-bottom: 2px solid var(--resize-handle);
+            transition: all 0.2s ease;
+        }
+
+        .react-resizable-handle:hover::after {
+            border-color: var(--brand-accent);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Utility Classes */
+        .text-gradient {
+            color: var(--brand-primary);
+        }
+
+        .btn-primary {
+            background-color: var(--brand-primary);
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Variable-driven utility remap (keeps existing Tailwind class usage, adds premium dark layering) */
+        .bg-gray-50,
+        .bg-gray-100,
+        .dark .dark\:bg-gray-900 {
+            background-color: var(--bg-main) !important;
+        }
+
+        .bg-white,
+        .dark .dark\:bg-gray-800 {
+            background-color: var(--bg-surface) !important;
+        }
+
+        .bg-gray-200,
+        .dark .dark\:bg-gray-700 {
+            background-color: var(--bg-active) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .bg-gray-700,
+        .bg-gray-800,
+        .bg-gray-900 {
+            background-color: var(--brand-secondary) !important;
+        }
+
+        .text-gray-900,
+        .text-gray-800,
+        .text-gray-700,
+        .dark .dark\:text-gray-100,
+        .dark .dark\:text-gray-200,
+        .dark .dark\:text-gray-300 {
+            color: var(--text-primary) !important;
+        }
+
+        .text-gray-600,
+        .text-gray-500,
+        .text-gray-400,
+        .dark .dark\:text-gray-400,
+        .dark .dark\:text-gray-500,
+        .dark .dark\:text-gray-600,
+        .dark .dark\:text-gray-700,
+        .dark .dark\:text-gray-800 {
+            color: var(--text-secondary) !important;
+        }
+
+        .text-white {
+            color: #FFFFFF !important;
+        }
+
+        .border-gray-200,
+        .border-gray-300,
+        .border-gray-600,
+        .border-gray-700,
+        .dark .dark\:border-gray-700,
+        .dark .dark\:border-gray-600,
+        .dark .dark\:border-gray-500 {
+            border-color: var(--border-color) !important;
+        }
+
+        .bg-blue-50,
+        .bg-blue-100 {
+            background-color: color-mix(in srgb, var(--brand-primary) 14%, transparent) !important;
+        }
+
+        .text-blue-500,
+        .text-blue-600,
+        .text-blue-700,
+        .text-blue-800 {
+            color: var(--brand-primary) !important;
+        }
+
+        .border-blue-100,
+        .border-blue-200,
+        .border-blue-700,
+        .border-blue-800 {
+            border-color: color-mix(in srgb, var(--brand-primary) 35%, var(--border-color)) !important;
+        }
+
+        .bg-emerald-50,
+        .bg-emerald-100 {
+            background-color: color-mix(in srgb, var(--brand-accent) 14%, transparent) !important;
+        }
+
+        .text-emerald-500,
+        .text-emerald-600,
+        .text-emerald-700,
+        .text-emerald-800 {
+            color: var(--brand-accent) !important;
+        }
+
+        .border-emerald-100,
+        .border-emerald-200,
+        .border-emerald-700,
+        .border-emerald-800 {
+            border-color: color-mix(in srgb, var(--brand-accent) 35%, var(--border-color)) !important;
+        }
+
+        .react-grid-item:has(.ring-2),
+        .react-grid-item:focus-within {
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2), 0 0 0 6px rgba(59, 130, 246, 0.12), var(--shadow-panel);
+        }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "echarts": "https://esm.sh/echarts@^5.6.0",
+    "echarts-for-react": "https://esm.sh/echarts-for-react@^3.0.6",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-grid-layout": "https://esm.sh/react-grid-layout@^1.5.0"
+  }
+}
+</script>
+    <link rel="stylesheet" href="/index.css">
+</head>
+
+<body class="overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/index.jsx"></script>
+</body>
+
+</html>
