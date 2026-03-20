@@ -127,7 +127,7 @@ This builds the project and publishes the `dist` folder to GitHub Pages.
 
 ## Live Demo
 
-[https://Vishnudharan24.github.io/TabNLP](https://Vishnudharan24.github.io/TabNLP)
+[https://github.com/SanthoshRamesh007/POWER_BI_AI](https://github.com/SanthoshRamesh007/POWER_BI_AI)
 
 ## License
 
